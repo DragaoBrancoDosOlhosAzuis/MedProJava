@@ -1,13 +1,10 @@
 package com.medpro.medpro.model.entity;
 
-import com.medpro.medpro.enums.Especialidade;
-import com.medpro.medpro.model.dto.DadosAtualizacaoMedico;
-import com.medpro.medpro.model.dto.DadosCadastroMedico;
+import com.medpro.medpro.model.dto.DadosAtualizacaoPaciente;
+import com.medpro.medpro.model.dto.DadosCadastroPaciente;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,12 +15,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "medicos")
+@Table(name = "pacientes")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-public class Medico {
+public class Paciente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,27 +29,23 @@ public class Medico {
     private String nome;
     private String email;
     private String telefone;
-    private String crm;    
-
-    @Enumerated(EnumType.STRING)
-    private Especialidade especialidade;
+    private String cpf;
 
     @Embedded
     private Endereco endereco;
 
     private boolean ativo;
 
-    public Medico(DadosCadastroMedico dados) {
+    public Paciente(DadosCadastroPaciente dados) {
         this.ativo = true;
         this.nome = dados.nome();
         this.email = dados.email();
         this.telefone = dados.telefone();
-        this.crm = dados.crm();
-        this.especialidade = dados.especialidade();
+        this.cpf = dados.cpf();
         this.endereco = new Endereco(dados.endereco());
     }
 
-    public void atualizarInformacoes(DadosAtualizacaoMedico dados) {
+    public void atualizarInformacoes(DadosAtualizacaoPaciente dados) {
         if (dados.nome() != null) {
             if (dados.nome().isBlank())
                 throw new IllegalArgumentException("Nome não pode estar em branco.");
@@ -65,11 +58,9 @@ public class Medico {
         }
         if (dados.endereco() != null)
             this.endereco.atualizarInformacoes(dados.endereco());
-
     }
 
     public void excluir(){
         this.ativo = false;
     }
-
 }

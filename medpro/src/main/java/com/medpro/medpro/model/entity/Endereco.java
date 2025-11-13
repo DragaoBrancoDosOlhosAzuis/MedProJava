@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Endereco {
-    
+
     private String logradouro;
     private String bairro;
     private String cep;
@@ -21,14 +21,52 @@ public class Endereco {
     private String numero;
     private String complemento;
 
-    public Endereco(DadosEndereco endereco) {
-        this.logradouro = endereco.logradouro();
-        this.bairro = endereco.bairro();
-        this.cep = endereco.cep();
-        this.cidade = endereco.cidade();
-        this.uf = endereco.uf();
-        this.numero = endereco.numero();
-        this.complemento = endereco.complemento();
+    public Endereco(DadosEndereco dados) {
+        this.logradouro = dados.logradouro();
+        this.bairro = dados.bairro();
+        this.cep = dados.cep();
+        this.cidade = dados.cidade();
+        this.uf = dados.uf();
+        this.numero = dados.numero();
+        this.complemento = dados.complemento();
     }
 
+    public void atualizarInformacoes(DadosEndereco dados) {
+        if (dados.logradouro() != null) {
+            if (dados.logradouro().isBlank())
+                throw new IllegalArgumentException("Logradouro não pode estar em branco.");
+            else
+                this.logradouro = dados.logradouro();
+        }
+        if (dados.bairro() != null) {
+            if (bairro.isBlank())
+                throw new IllegalArgumentException("Bairro não pode estar em branco.");
+            else
+                this.bairro = dados.bairro();
+        }
+        if (dados.cep() != null) {
+            if (cep.isBlank())
+                throw new IllegalArgumentException("CEP não pode estar em branco.");
+            else
+                this.cep = dados.cep();
+        }
+        if (dados.cidade() != null) {
+            if (cidade.isBlank())
+                throw new IllegalArgumentException("Cidade não pode estar em branco.");
+            else
+                this.cidade = dados.cidade();
+        }
+        if (dados.uf() != null) {
+            if (uf.isBlank())
+                throw new IllegalArgumentException("UF não pode estar em branco.");
+            else
+                this.uf = dados.uf();
+        }
+        if (dados.numero() != null) {
+            this.numero = dados.numero();
+        }
+        if (dados.complemento() != null) {
+            this.complemento = dados.complemento();
+        }
+    }
 }
