@@ -2,7 +2,6 @@ package com.medpro.medpro.model.entity;
 
 import com.medpro.medpro.model.dto.DadosAtualizacaoPaciente;
 import com.medpro.medpro.model.dto.DadosCadastroPaciente;
-
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,22 +9,22 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "pacientes")
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Paciente {
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     private String nome;
     private String email;
     private String telefone;
@@ -35,7 +34,7 @@ public class Paciente {
     private Endereco endereco;
 
     private boolean ativo;
-
+    
     public Paciente(DadosCadastroPaciente dados) {
         this.ativo = true;
         this.nome = dados.nome();
@@ -46,18 +45,16 @@ public class Paciente {
     }
 
     public void atualizarInformacoes(DadosAtualizacaoPaciente dados) {
-        if (dados.nome() != null) {
-            if (dados.nome().isBlank())
-                throw new IllegalArgumentException("Nome não pode estar em branco.");
-            this.nome = dados.nome();
+        if (dados.email() != null) {
+            if (dados.email().isBlank())
+                throw new IllegalArgumentException("Email não pode estar em branco.");
+            this.nome = dados.email();
         }
-        if (dados.telefone() != null) {
-            if (dados.telefone().isBlank())
-                throw new IllegalArgumentException("Telefone não pode estar em branco.");
-            this.telefone = dados.telefone();
+        if (dados.cpf() != null) {
+            if (dados.cpf().isBlank())
+                throw new IllegalArgumentException("CPF não pode estar em branco.");
+            this.telefone = dados.cpf();
         }
-        if (dados.endereco() != null)
-            this.endereco.atualizarInformacoes(dados.endereco());
     }
 
     public void excluir(){

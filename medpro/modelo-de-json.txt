@@ -1,0 +1,34 @@
+-----------Paciente-------------
+{
+  "nome": "João da Silva",
+  "email": "joao.silva@example.com",
+  "telefone": "(11) 91234-5678",
+  "cpf": "12345678900",
+  "endereco": {
+    "logradouro": "Rua das Flores",
+    "bairro": "Jardim Primavera",
+    "cep": "12345-678",
+    "cidade": "São Paulo",
+    "uf": "SP",
+    "numero": "123",
+    "complemento": "Apto 45B"
+  }
+}
+
+-----------Medico-------------
+{
+  "nome": "Hugo",
+  "email": "hugo@medpro.com",
+  "telefone": "11912345678",
+  "crm": "123456",
+  "especialidade": "CARDIOLOGIA",
+  "endereco": {
+    "logradouro": "Rua 3",
+    "bairro": "bairro 2",
+    "cep": "12345678",
+    "cidade": "São Carlos",
+    "uf": "SP",
+    "numero": "4",
+    "complemento": "casa"
+  }
+}
