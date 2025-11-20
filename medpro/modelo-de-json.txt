@@ -17,18 +17,18 @@
 
 -----------Medico-------------
 {
-  "nome": "Hugo",
-  "email": "hugo@medpro.com",
+  "nome": "Caio Dal Negro",
+  "email": "caio@medpro.com",
   "telefone": "11912345678",
   "crm": "123456",
-  "especialidade": "CARDIOLOGIA",
+  "especialidade": "GINICOLOGIA",
   "endereco": {
-    "logradouro": "Rua 3",
-    "bairro": "bairro 2",
+    "logradouro": "Rua das Flores",
+    "bairro": "Jardim Primavera",
     "cep": "12345678",
-    "cidade": "São Carlos",
+    "cidade": "São Paulo",
     "uf": "SP",
-    "numero": "4",
-    "complemento": "casa"
+    "numero": "54",
+    "complemento": "Telesp"
   }
 }

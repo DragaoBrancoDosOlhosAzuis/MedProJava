@@ -12,23 +12,25 @@ import jakarta.persistence.EntityNotFoundException;
 
 @RestControllerAdvice
 public class TratadorDeErros {
-
+    
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Void> tratarErro404(){
+    public ResponseEntity <Void> tratarErro404(){
         return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<List<TratadorDeErros.DadosErroValidacao>> tratarErro400(MethodArgumentNotValidException e){
-        var erros = e.getFieldErrors();
-        return ResponseEntity.badRequest().body(erros.stream().map(DadosErroValidacao::new).toList());
-    }
-        
-    private record DadosErroValidacao(String campo, String mensagem){
+    public ResponseEntity <List<TratadorDeErros.DadosErroValidacao>> tratarErro400(
+        MethodArgumentNotValidException e) {
+            var erros = e.getFieldErrors();
+            return ResponseEntity
+            .badRequest()
+            .body(erros.stream().map(DadosErroValidacao::new).toList());
+        }
 
+    private record DadosErroValidacao(String campo, String mensagem) {
         public DadosErroValidacao(FieldError erro){
             this(erro.getField(), erro.getDefaultMessage());
         }
-
     }
+
 }

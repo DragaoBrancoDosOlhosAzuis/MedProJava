@@ -1,0 +1,8 @@
+#Acessar SQL no CMD
+mysql -u root -p
+
+#Visualizar banco de dados
+show database;
+
+#Criar banco de dados
+create database medpro_api;
