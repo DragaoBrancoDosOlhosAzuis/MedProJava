@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MedPro - Teste</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <h1>MedPro - Sistema de Teste</h1>
+
+    <div id="mensagem"></div>
+
+    <!-- Médicos -->
+    <div class="secao">
+      <h2>Médicos</h2>
+
+      <h3>Cadastrar Médico</h3>
+      <form id="formMedico">
+        <input type="text" id="medicoNome" placeholder="Nome" required />
+        <input type="email" id="medicoEmail" placeholder="Email" required />
+        <input
+          type="text"
+          id="medicoTelefone"
+          placeholder="Telefone"
+          required
+        />
+        <input type="text" id="medicoCrm" placeholder="CRM" required />
+        <select id="medicoEspecialidade" required>
+          <option value="">Especialidade</option>
+          <option value="CARDIOLOGIA">Cardiologia</option>
+          <option value="DERMATOLOGIA">Dermatologia</option>
+          <option value="GINECOLOGIA">Ginecologia</option>
+          <option value="ORTOPEDIA">Ortopedia</option>
+        </select>
+        <button type="submit">Cadastrar Médico</button>
+      </form>
+
+      <h3>Lista de Médicos</h3>
+      <button onclick="listarMedicos()">Carregar Médicos</button>
+      <div id="listaMedicos"></div>
+    </div>
+
+    <!-- Pacientes -->
+    <div class="secao">
+      <h2>Pacientes</h2>
+
+      <h3>Cadastrar Paciente</h3>
+      <form id="formPaciente">
+        <input type="text" id="pacienteNome" placeholder="Nome" required />
+        <input type="email" id="pacienteEmail" placeholder="Email" required />
+        <input
+          type="text"
+          id="pacienteTelefone"
+          placeholder="Telefone"
+          required
+        />
+        <input type="text" id="pacienteCpf" placeholder="CPF" required />
+        <button type="submit">Cadastrar Paciente</button>
+      </form>
+
+      <h3>Lista de Pacientes</h3>
+      <button onclick="listarPacientes()">Carregar Pacientes</button>
+      <div id="listaPacientes"></div>
+    </div>
+
+    <!-- Consultas -->
+    <div class="secao">
+      <h2>Consultas</h2>
+
+      <h3>Agendar Consulta</h3>
+      <form id="formAgendarConsulta">
+        <select id="consultaPaciente" required>
+          <option value="">Selecione paciente</option>
+        </select>
+        <select id="consultaMedico">
+          <option value="">Selecione médico (opcional)</option>
+        </select>
+        <input type="datetime-local" id="consultaDataHora" required />
+        <button type="submit">Agendar Consulta</button>
+      </form>
+
+      <h3>Cancelar Consulta</h3>
+      <form id="formCancelarConsulta">
+        <select id="cancelarConsulta" required>
+          <option value="">Selecione consulta</option>
+        </select>
+        <select id="motivoCancelamento" required>
+          <option value="">Motivo</option>
+          <option value="PACIENTE_DESISTIU">Paciente desistiu</option>
+          <option value="MEDICO_CANCELOU">Médico cancelou</option>
+          <option value="OUTROS">Outros</option>
+        </select>
+        <button type="submit">Cancelar Consulta</button>
+      </form>
+
+      <h3>Lista de Consultas</h3>
+      <button onclick="listarConsultas()">Carregar Consultas</button>
+      <div id="listaConsultas"></div>
+    </div>
+
+    <script src="/js/script.js"></script>
+  </body>
+</html>

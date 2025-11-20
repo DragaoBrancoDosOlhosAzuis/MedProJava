@@ -33,4 +33,9 @@ public class TratadorDeErros {
         }
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> tratarErroRegraNegocio(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 }
