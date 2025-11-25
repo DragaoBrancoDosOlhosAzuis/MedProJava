@@ -45,16 +45,16 @@ public class Paciente {
     }
 
     public void atualizarInformacoes(DadosAtualizacaoPaciente dados) {
-        if (dados.email() != null) {
-            if (dados.email().isBlank())
-                throw new IllegalArgumentException("Email não pode estar em branco.");
-            this.nome = dados.email();
-        }
-        if (dados.cpf() != null) {
-            if (dados.cpf().isBlank())
-                throw new IllegalArgumentException("CPF não pode estar em branco.");
-            this.telefone = dados.cpf();
-        }
+    if (dados.email() != null) {
+        if (dados.email().isBlank())
+            throw new IllegalArgumentException("Email não pode estar em branco.");
+        this.email = dados.email(); // Corrigir: estava this.nome = dados.email()
+    }
+    if (dados.cpf() != null) {
+        if (dados.cpf().isBlank())
+            throw new IllegalArgumentException("CPF não pode estar em branco.");
+        this.cpf = dados.cpf(); // Corrigir: estava this.telefone = dados.cpf()
+    }
     }
 
     public void excluir(){
