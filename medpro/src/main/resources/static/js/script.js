@@ -1,4 +1,5 @@
 const API_BASE = window.location.origin;
+
 function mostrarMensagem(texto, tipo = "sucesso") {
   const div = document.getElementById("mensagem");
   div.textContent = texto;
@@ -45,6 +46,26 @@ async function fazerRequisicao(url, options = {}) {
     console.error("Erro na requisição:", error);
     mostrarMensagem("Erro: " + error.message, "erro");
     throw error;
+  }
+}
+
+// Função para debug detalhado
+async function debugPacientes() {
+  console.log("=== DEBUG DETALHADO PACIENTES ===");
+  try {
+    const response = await fetch("pacientes?size=100");
+    console.log("Status da resposta:", response.status);
+    console.log("Headers:", response.headers);
+
+    const text = await response.text();
+    console.log("Resposta como texto:", text);
+
+    if (text) {
+      const data = JSON.parse(text);
+      console.log("Dados parseados:", data);
+    }
+  } catch (error) {
+    console.error("Erro no debug:", error);
   }
 }
 
@@ -96,10 +117,23 @@ async function listarMedicos() {
       return;
     }
 
+    // DEBUG: Verificar os dados dos médicos
+    console.log("DEBUG - Dados dos médicos:", response.content);
+    response.content.forEach((medico, index) => {
+      console.log(
+        `Médico ${index}: id=${medico.id}, nome=${medico.nome}, ativo=${medico.ativo}`
+      );
+    });
+
     lista.innerHTML = response.content
       .map((medico) => {
-        // Verificar se o campo ativo existe, se não, considerar como ativo
         const ativo = medico.ativo !== undefined ? medico.ativo : true;
+        const id = medico.id;
+
+        if (!id) {
+          console.error("Médico sem ID:", medico);
+          return "";
+        }
 
         return `
             <div class="item ${!ativo ? "inativo" : ""}">
@@ -110,12 +144,10 @@ async function listarMedicos() {
                 <strong>Telefone:</strong> ${medico.telefone}<br>
                 <strong>Status:</strong> ${ativo ? "Ativo" : "Inativo"}
                 <div style="margin-top: 10px;">
-                    <button onclick="detalharMedico(${
-                      medico.id
-                    })">Detalhar</button>
-                    <button class="btn-excluir" onclick="excluirMedico(${
-                      medico.id
-                    })" ${!ativo ? "disabled" : ""}>
+                    <button onclick="detalharMedico(${id})">Detalhar</button>
+                    <button class="btn-excluir" onclick="excluirMedico(${id})" ${
+          !ativo ? "disabled" : ""
+        }>
                         ${ativo ? "Excluir" : "Excluído"}
                     </button>
                 </div>
@@ -133,8 +165,16 @@ async function listarMedicos() {
 }
 
 async function detalharMedico(id) {
+  console.log("Detalhando médico com ID:", id, "Tipo:", typeof id);
+
+  if (!id || id === "undefined" || id === "null") {
+    mostrarMensagem("Erro: ID do médico inválido", "erro");
+    return;
+  }
+
   try {
-    const medico = await fazerRequisicao(`medicos/${id}`);
+    const medicoId = typeof id === "string" ? parseInt(id) : id;
+    const medico = await fazerRequisicao(`medicos/${medicoId}`);
     alert(
       `Detalhes do Médico:\n\nNome: ${medico.nome}\nEmail: ${
         medico.email
@@ -148,10 +188,19 @@ async function detalharMedico(id) {
 }
 
 async function excluirMedico(id) {
+  console.log("Tentando excluir médico com ID:", id, "Tipo:", typeof id);
+
+  if (!id || id === "undefined" || id === "null") {
+    mostrarMensagem("Erro: ID do médico inválido", "erro");
+    return;
+  }
+
   if (!confirm("Tem certeza que deseja excluir este médico?")) return;
 
   try {
-    await fazerRequisicao(`medicos/${id}`, {
+    const medicoId = typeof id === "string" ? parseInt(id) : id;
+
+    await fazerRequisicao(`medicos/${medicoId}`, {
       method: "DELETE",
     });
 
@@ -163,7 +212,7 @@ async function excluirMedico(id) {
   }
 }
 
-// Pacientes - Versão Corrigida
+// Pacientes
 document
   .getElementById("formPaciente")
   .addEventListener("submit", async (e) => {
@@ -173,7 +222,7 @@ document
       nome: document.getElementById("pacienteNome").value,
       email: document.getElementById("pacienteEmail").value,
       telefone: document.getElementById("pacienteTelefone").value,
-      cpf: document.getElementById("pacienteCpf").value.replace(/\D/g, ""), // Remove caracteres não numéricos
+      cpf: document.getElementById("pacienteCpf").value.replace(/\D/g, ""),
       endereco: {
         logradouro: "Avenida Paulista",
         bairro: "Bela Vista",
@@ -204,19 +253,53 @@ document
 async function listarPacientes() {
   try {
     console.log("Carregando lista de pacientes...");
-    const response = await fazerRequisicao("pacientes?size=100");
+
+    let response;
+    try {
+      response = await fazerRequisicao("pacientes?size=100");
+    } catch (error) {
+      console.log("Tentando endpoint alternativo...");
+      response = await fazerRequisicao("pacientes");
+    }
+
     const lista = document.getElementById("listaPacientes");
 
-    if (!response.content || response.content.length === 0) {
+    let pacientes = [];
+    if (response && response.content) {
+      pacientes = response.content;
+    } else if (Array.isArray(response)) {
+      pacientes = response;
+    } else if (response && Array.isArray(response.pacientes)) {
+      pacientes = response.pacientes;
+    }
+
+    if (!pacientes || pacientes.length === 0) {
       lista.innerHTML = '<div class="item">Nenhum paciente cadastrado</div>';
       return;
     }
 
-    lista.innerHTML = response.content
+    console.log("DEBUG - Pacientes encontrados:", pacientes);
+    pacientes.forEach((paciente, index) => {
+      console.log(`Paciente ${index}:`, {
+        id: paciente.id,
+        nome: paciente.nome,
+        email: paciente.email,
+        cpf: paciente.cpf,
+        telefone: paciente.telefone,
+        ativo: paciente.ativo,
+      });
+    });
+
+    lista.innerHTML = pacientes
       .map((paciente) => {
-        // Verificar se o campo ativo existe, se não, considerar como ativo
         const ativo = paciente.ativo !== undefined ? paciente.ativo : true;
         const telefone = paciente.telefone || "Não informado";
+        const id = paciente.id;
+
+        if (!id) {
+          console.error("Paciente sem ID:", paciente);
+          return "";
+        }
 
         return `
             <div class="item ${!ativo ? "inativo" : ""}">
@@ -227,12 +310,10 @@ async function listarPacientes() {
                 <strong>Telefone:</strong> ${telefone}<br>
                 <strong>Status:</strong> ${ativo ? "Ativo" : "Inativo"}
                 <div style="margin-top: 10px;">
-                    <button onclick="detalharPaciente(${
-                      paciente.id
-                    })">Detalhar</button>
-                    <button class="btn-excluir" onclick="excluirPaciente(${
-                      paciente.id
-                    })" ${!ativo ? "disabled" : ""}>
+                    <button onclick="detalharPaciente(${id})">Detalhar</button>
+                    <button class="btn-excluir" onclick="excluirPaciente(${id})" ${
+          !ativo ? "disabled" : ""
+        }>
                         ${ativo ? "Excluir" : "Excluído"}
                     </button>
                 </div>
@@ -241,17 +322,27 @@ async function listarPacientes() {
       })
       .join("");
 
-    console.log(`Listados ${response.content.length} pacientes`);
+    console.log(`Listados ${pacientes.length} pacientes`);
   } catch (error) {
     console.error("Erro ao carregar pacientes:", error);
     document.getElementById("listaPacientes").innerHTML =
-      '<div class="item erro">Erro ao carregar pacientes</div>';
+      '<div class="item erro">Erro ao carregar pacientes: ' +
+      error.message +
+      "</div>";
   }
 }
 
 async function detalharPaciente(id) {
+  console.log("Detalhando paciente com ID:", id, "Tipo:", typeof id);
+
+  if (!id || id === "undefined" || id === "null") {
+    mostrarMensagem("Erro: ID do paciente inválido", "erro");
+    return;
+  }
+
   try {
-    const paciente = await fazerRequisicao(`pacientes/${id}`);
+    const pacienteId = typeof id === "string" ? parseInt(id) : id;
+    const paciente = await fazerRequisicao(`pacientes/${pacienteId}`);
     alert(
       `Detalhes do Paciente:\n\nNome: ${paciente.nome}\nEmail: ${
         paciente.email
@@ -265,10 +356,19 @@ async function detalharPaciente(id) {
 }
 
 async function excluirPaciente(id) {
+  console.log("Tentando excluir paciente com ID:", id, "Tipo:", typeof id);
+
+  if (!id || id === "undefined" || id === "null") {
+    mostrarMensagem("Erro: ID do paciente inválido", "erro");
+    return;
+  }
+
   if (!confirm("Tem certeza que deseja excluir este paciente?")) return;
 
   try {
-    await fazerRequisicao(`pacientes/${id}`, {
+    const pacienteId = typeof id === "string" ? parseInt(id) : id;
+
+    await fazerRequisicao(`pacientes/${pacienteId}`, {
       method: "DELETE",
     });
 
@@ -288,9 +388,15 @@ async function carregarDadosConsulta() {
     // Carregar pacientes ativos
     const pacientesResponse = await fazerRequisicao("pacientes?size=100");
     const selectPaciente = document.getElementById("consultaPaciente");
-    const pacientesAtivos = pacientesResponse.content
-      ? pacientesResponse.content.filter((p) => p.ativo !== false)
-      : [];
+    let pacientesAtivos = [];
+
+    if (pacientesResponse && pacientesResponse.content) {
+      pacientesAtivos = pacientesResponse.content.filter(
+        (p) => p.ativo !== false
+      );
+    } else if (Array.isArray(pacientesResponse)) {
+      pacientesAtivos = pacientesResponse.filter((p) => p.ativo !== false);
+    }
 
     selectPaciente.innerHTML =
       '<option value="">Selecione o paciente</option>' +
@@ -301,9 +407,13 @@ async function carregarDadosConsulta() {
     // Carregar médicos ativos
     const medicosResponse = await fazerRequisicao("medicos?size=100");
     const selectMedico = document.getElementById("consultaMedico");
-    const medicosAtivos = medicosResponse.content
-      ? medicosResponse.content.filter((m) => m.ativo !== false)
-      : [];
+    let medicosAtivos = [];
+
+    if (medicosResponse && medicosResponse.content) {
+      medicosAtivos = medicosResponse.content.filter((m) => m.ativo !== false);
+    } else if (Array.isArray(medicosResponse)) {
+      medicosAtivos = medicosResponse.filter((m) => m.ativo !== false);
+    }
 
     selectMedico.innerHTML =
       '<option value="">Selecione o médico (opcional)</option>' +
@@ -314,7 +424,6 @@ async function carregarDadosConsulta() {
         )
         .join("");
 
-    // Carregar consultas para cancelamento
     await carregarConsultasParaCancelamento();
 
     console.log("Dados para consultas carregados com sucesso");
@@ -328,7 +437,11 @@ async function carregarConsultasParaCancelamento() {
   try {
     const consultas = await fazerRequisicao("consultas");
     const selectCancelar = document.getElementById("cancelarConsulta");
-    const consultasAtivas = consultas.filter((c) => c.ativa !== false);
+    let consultasAtivas = [];
+
+    if (Array.isArray(consultas)) {
+      consultasAtivas = consultas.filter((c) => c.ativa !== false);
+    }
 
     selectCancelar.innerHTML =
       '<option value="">Selecione a consulta</option>' +
@@ -410,12 +523,17 @@ async function listarConsultas() {
     const consultas = await fazerRequisicao("consultas");
     const lista = document.getElementById("listaConsultas");
 
-    if (!consultas || consultas.length === 0) {
+    let consultasArray = [];
+    if (Array.isArray(consultas)) {
+      consultasArray = consultas;
+    }
+
+    if (!consultasArray || consultasArray.length === 0) {
       lista.innerHTML = '<div class="item">Nenhuma consulta agendada</div>';
       return;
     }
 
-    lista.innerHTML = consultas
+    lista.innerHTML = consultasArray
       .map((consulta) => {
         const ativa = consulta.ativa !== undefined ? consulta.ativa : true;
         return `
@@ -441,7 +559,7 @@ async function listarConsultas() {
       })
       .join("");
 
-    console.log(`Listadas ${consultas.length} consultas`);
+    console.log(`Listadas ${consultasArray.length} consultas`);
   } catch (error) {
     console.error("Erro ao carregar consultas:", error);
     document.getElementById("listaConsultas").innerHTML =
@@ -458,11 +576,10 @@ function formatarMotivoCancelamento(motivo) {
   return motivos[motivo] || motivo;
 }
 
-// Função de teste rápido
+// Teste rápido
 async function testeRapido() {
   console.log("=== INICIANDO TESTE RÁPIDO ===");
 
-  // Teste de paciente
   const pacienteTeste = {
     nome: "Maria Silva Teste",
     email: "maria.teste@email.com",
@@ -501,7 +618,10 @@ document.addEventListener("DOMContentLoaded", function () {
   listarPacientes();
   listarConsultas();
 
-  // Adicionar teste rápido ao console
+  // Debug
+  setTimeout(debugPacientes, 1000);
+
+  // Testes
   window.testeRapido = testeRapido;
   console.log("Para testar rapidamente, execute no console: testeRapido()");
 });

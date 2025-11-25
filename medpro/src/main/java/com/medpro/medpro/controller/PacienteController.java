@@ -28,7 +28,6 @@ import jakarta.validation.Valid;
 @RequestMapping("pacientes")
 public class PacienteController {
     
-    
     @Autowired
     private PacienteRepository pacienteRepository;
 
@@ -46,34 +45,31 @@ public class PacienteController {
     }
 
     @GetMapping
-    public ResponseEntity <Page<DadosListagemPaciente>> listar(Pageable paginacao){
+    public ResponseEntity<Page<DadosListagemPaciente>> listar(Pageable paginacao) {
         var page = pacienteRepository.findAll(paginacao)
-                    .map(DadosListagemPaciente::new);
+                .map(DadosListagemPaciente::new);
         return ResponseEntity.ok(page);
     }
 
     @PutMapping
     @Transactional
-    public ResponseEntity <DadosDetalhamentoPaciente> atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados) {
+    public ResponseEntity<DadosDetalhamentoPaciente> atualizar(@RequestBody @Valid DadosAtualizacaoPaciente dados) {
         var paciente = pacienteRepository.getReferenceById(dados.id());
         paciente.atualizarInformacoes(dados);
-
         return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity <Void> excluir(@PathVariable Long id) {
+    public ResponseEntity<Void> excluir(@PathVariable Long id) {
         var paciente = pacienteRepository.getReferenceById(id);
         paciente.excluir();
-
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity <DadosDetalhamentoPaciente> detalhar(@PathVariable Long id) {
+    public ResponseEntity<DadosDetalhamentoPaciente> detalhar(@PathVariable Long id) {
         var paciente = pacienteRepository.getReferenceById(id);
-
         return ResponseEntity.ok(new DadosDetalhamentoPaciente(paciente));
     }
 }
