@@ -97,28 +97,31 @@ async function listarMedicos() {
     }
 
     lista.innerHTML = response.content
-      .map(
-        (medico) => `
-            <div class="item ${!medico.ativo ? "inativo" : ""}">
+      .map((medico) => {
+        // Verificar se o campo ativo existe, se não, considerar como ativo
+        const ativo = medico.ativo !== undefined ? medico.ativo : true;
+
+        return `
+            <div class="item ${!ativo ? "inativo" : ""}">
                 <strong>${medico.nome}</strong> - ${medico.especialidade}<br>
                 <strong>CRM:</strong> ${medico.crm} | <strong>Email:</strong> ${
           medico.email
         }<br>
                 <strong>Telefone:</strong> ${medico.telefone}<br>
-                <strong>Status:</strong> ${medico.ativo ? "Ativo" : "Inativo"}
+                <strong>Status:</strong> ${ativo ? "Ativo" : "Inativo"}
                 <div style="margin-top: 10px;">
                     <button onclick="detalharMedico(${
                       medico.id
                     })">Detalhar</button>
                     <button class="btn-excluir" onclick="excluirMedico(${
                       medico.id
-                    })" ${!medico.ativo ? "disabled" : ""}>
-                        ${medico.ativo ? "Excluir" : "Excluído"}
+                    })" ${!ativo ? "disabled" : ""}>
+                        ${ativo ? "Excluir" : "Excluído"}
                     </button>
                 </div>
             </div>
-        `
-      )
+          `;
+      })
       .join("");
 
     console.log(`Listados ${response.content.length} médicos`);
@@ -156,6 +159,7 @@ async function excluirMedico(id) {
     await listarMedicos();
   } catch (error) {
     console.error("Erro ao excluir médico:", error);
+    mostrarMensagem("Erro ao excluir médico: " + error.message, "erro");
   }
 }
 
@@ -209,28 +213,32 @@ async function listarPacientes() {
     }
 
     lista.innerHTML = response.content
-      .map(
-        (paciente) => `
-            <div class="item ${!paciente.ativo ? "inativo" : ""}">
+      .map((paciente) => {
+        // Verificar se o campo ativo existe, se não, considerar como ativo
+        const ativo = paciente.ativo !== undefined ? paciente.ativo : true;
+        const telefone = paciente.telefone || "Não informado";
+
+        return `
+            <div class="item ${!ativo ? "inativo" : ""}">
                 <strong>${paciente.nome}</strong><br>
                 <strong>CPF:</strong> ${
                   paciente.cpf
                 } | <strong>Email:</strong> ${paciente.email}<br>
-                <strong>Telefone:</strong> ${paciente.telefone}<br>
-                <strong>Status:</strong> ${paciente.ativo ? "Ativo" : "Inativo"}
+                <strong>Telefone:</strong> ${telefone}<br>
+                <strong>Status:</strong> ${ativo ? "Ativo" : "Inativo"}
                 <div style="margin-top: 10px;">
                     <button onclick="detalharPaciente(${
                       paciente.id
                     })">Detalhar</button>
                     <button class="btn-excluir" onclick="excluirPaciente(${
                       paciente.id
-                    })" ${!paciente.ativo ? "disabled" : ""}>
-                        ${paciente.ativo ? "Excluir" : "Excluído"}
+                    })" ${!ativo ? "disabled" : ""}>
+                        ${ativo ? "Excluir" : "Excluído"}
                     </button>
                 </div>
             </div>
-        `
-      )
+          `;
+      })
       .join("");
 
     console.log(`Listados ${response.content.length} pacientes`);
@@ -268,6 +276,7 @@ async function excluirPaciente(id) {
     await listarPacientes();
   } catch (error) {
     console.error("Erro ao excluir paciente:", error);
+    mostrarMensagem("Erro ao excluir paciente: " + error.message, "erro");
   }
 }
 
@@ -280,7 +289,7 @@ async function carregarDadosConsulta() {
     const pacientesResponse = await fazerRequisicao("pacientes?size=100");
     const selectPaciente = document.getElementById("consultaPaciente");
     const pacientesAtivos = pacientesResponse.content
-      ? pacientesResponse.content.filter((p) => p.ativo)
+      ? pacientesResponse.content.filter((p) => p.ativo !== false)
       : [];
 
     selectPaciente.innerHTML =
@@ -293,7 +302,7 @@ async function carregarDadosConsulta() {
     const medicosResponse = await fazerRequisicao("medicos?size=100");
     const selectMedico = document.getElementById("consultaMedico");
     const medicosAtivos = medicosResponse.content
-      ? medicosResponse.content.filter((m) => m.ativo)
+      ? medicosResponse.content.filter((m) => m.ativo !== false)
       : [];
 
     selectMedico.innerHTML =
@@ -319,7 +328,7 @@ async function carregarConsultasParaCancelamento() {
   try {
     const consultas = await fazerRequisicao("consultas");
     const selectCancelar = document.getElementById("cancelarConsulta");
-    const consultasAtivas = consultas.filter((c) => c.ativa);
+    const consultasAtivas = consultas.filter((c) => c.ativa !== false);
 
     selectCancelar.innerHTML =
       '<option value="">Selecione a consulta</option>' +
@@ -407,9 +416,10 @@ async function listarConsultas() {
     }
 
     lista.innerHTML = consultas
-      .map(
-        (consulta) => `
-            <div class="item ${consulta.ativa ? "" : "inativo"}">
+      .map((consulta) => {
+        const ativa = consulta.ativa !== undefined ? consulta.ativa : true;
+        return `
+            <div class="item ${!ativa ? "inativo" : ""}">
                 <strong>Consulta #${consulta.id}</strong><br>
                 <strong>Paciente:</strong> ${consulta.nomePaciente}<br>
                 <strong>Médico:</strong> ${
@@ -418,9 +428,7 @@ async function listarConsultas() {
                 <strong>Data/Hora:</strong> ${new Date(
                   consulta.dataHora
                 ).toLocaleString("pt-BR")}<br>
-                <strong>Status:</strong> ${
-                  consulta.ativa ? "✅ Ativa" : "❌ Cancelada"
-                }
+                <strong>Status:</strong> ${ativa ? "✅ Ativa" : "❌ Cancelada"}
                 ${
                   consulta.motivoCancelamento
                     ? `<br><strong>Motivo:</strong> ${formatarMotivoCancelamento(
@@ -429,8 +437,8 @@ async function listarConsultas() {
                     : ""
                 }
             </div>
-        `
-      )
+          `;
+      })
       .join("");
 
     console.log(`Listadas ${consultas.length} consultas`);
