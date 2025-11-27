@@ -1,0 +1,325 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: MedPro API
+meta:
+  id: wrk_medpro
+  created: 1755305216668
+  modified: 1755305216668
+  description: "Coleção para testar a API do sistema MedPro"
+collection:
+  - name: MedPro - Sistema de Clínica Médica
+    meta:
+      id: fld_medpro_main
+      created: 1763667130159
+      modified: 1763667130159
+      sortKey: -1763667130159
+      description: "Endpoints do sistema MedPro"
+    children:
+      
+      # ========== MÉDICOS ==========
+      - name: Medicos
+        meta:
+          id: fld_medicos
+          created: 1763667130159
+          modified: 1763667130159
+          sortKey: -1763667130159
+        children:
+          - url: http://localhost:8080/medicos
+            name: Listar Medicos
+            meta:
+              id: req_listar_medicos
+              created: 1763667134968
+              modified: 1763667166220
+              isPrivate: false
+              description: "Lista todos os médicos cadastrados"
+              sortKey: -1763667134968
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.0.0
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+
+          - url: http://localhost:8080/medicos
+            name: Cadastrar Medico
+            meta:
+              id: req_cadastrar_medico
+              created: 1763667175200
+              modified: 1763930765935
+              isPrivate: false
+              description: "Cadastra um novo médico"
+              sortKey: -1763667134868
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                  "nome": "Dr. João Silva",
+                  "email": "joao.silva@medpro.com",
+                  "telefone": "11999998888",
+                  "crm": "123456",
+                  "especialidade": "CARDIOLOGIA",
+                  "endereco": {
+                    "logradouro": "Rua das Flores",
+                    "bairro": "Jardim Paulista",
+                    "cep": "01415000",
+                    "cidade": "São Paulo",
+                    "uf": "SP",
+                    "numero": "123",
+                    "complemento": "Sala 45"
+                  }
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.0.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+
+          - url: http://localhost:8080/medicos/1
+            name: Excluir Medico
+            meta:
+              id: req_excluir_medico
+              created: 1763667260250
+              modified: 1763667330969
+              isPrivate: false
+              description: "Exclui um médico (marca como inativo)"
+              sortKey: -1763667134668
+            method: DELETE
+            headers:
+              - name: User-Agent
+                value: insomnia/12.0.0
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+
+      # ========== PACIENTES ==========
+      - name: Pacientes
+        meta:
+          id: fld_pacientes
+          created: 1763667342574
+          modified: 1763667372696
+          sortKey: -1763667134568
+        children:
+          - url: http://localhost:8080/pacientes
+            name: Listar Pacientes
+            meta:
+              id: req_listar_pacientes
+              created: 1763667342574
+              modified: 1763667372696
+              isPrivate: false
+              description: "Lista todos os pacientes cadastrados"
+              sortKey: -1763667134468
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.0.0
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+
+          - url: http://localhost:8080/pacientes
+            name: Cadastrar Paciente
+            meta:
+              id: req_cadastrar_paciente
+              created: 1763667383263
+              modified: 1763930735087
+              isPrivate: false
+              description: "Cadastra um novo paciente"
+              sortKey: -1763667134368
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                  "nome": "Maria Santos",
+                  "email": "maria.santos@email.com",
+                  "telefone": "11988887777",
+                  "cpf": "12345678901",
+                  "endereco": {
+                    "logradouro": "Avenida Paulista",
+                    "bairro": "Bela Vista",
+                    "cep": "01311000",
+                    "cidade": "São Paulo",
+                    "uf": "SP",
+                    "numero": "1000",
+                    "complemento": "Apartamento 101"
+                  }
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.0.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+
+          - url: http://localhost:8080/pacientes/1
+            name: Excluir Paciente
+            meta:
+              id: req_excluir_paciente
+              created: 1763667449065
+              modified: 1763667474370
+              isPrivate: false
+              description: "Exclui permanentemente um paciente"
+              sortKey: -1763667134168
+            method: DELETE
+            headers:
+              - name: User-Agent
+                value: insomnia/12.0.0
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+
+      # ========== CONSULTAS ==========
+      - name: Consultas
+        meta:
+          id: fld_consultas
+          created: 1763668045737
+          modified: 1763930814394
+          sortKey: -1763667134068
+        children:
+          - url: http://localhost:8080/consultas
+            name: Listar Consultas
+            meta:
+              id: req_listar_consultas
+              created: 1763668096896
+              modified: 1763668107401
+              isPrivate: false
+              description: "Lista todas as consultas agendadas"
+              sortKey: -1763667133968
+            method: GET
+            headers:
+              - name: User-Agent
+                value: insomnia/12.0.0
+              - name: Content-Type
+                value: application/json
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+
+          - url: http://localhost:8080/consultas
+            name: Agendar Consulta
+            meta:
+              id: req_agendar_consulta
+              created: 1763668045737
+              modified: 1763930814394
+              isPrivate: false
+              description: "Agenda uma nova consulta"
+              sortKey: -1763667133868
+            method: POST
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                  "idPaciente": 1,
+                  "idMedico": 1,
+                  "dataHora": "2024-12-20T10:00:00"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.0.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+
+          - url: http://localhost:8080/consultas
+            name: Cancelar Consulta
+            meta:
+              id: req_cancelar_consulta
+              created: 1763669193771
+              modified: 1763930829051
+              isPrivate: false
+              description: "Cancela uma consulta agendada"
+              sortKey: -1763667133768
+            method: DELETE
+            body:
+              mimeType: application/json
+              text: |-
+                {
+                  "idConsulta": 1,
+                  "motivo": "PACIENTE_DESISTIU"
+                }
+            headers:
+              - name: Content-Type
+                value: application/json
+              - name: User-Agent
+                value: insomnia/12.0.0
+            settings:
+              renderRequestBody: true
+              encodeUrl: true
+              followRedirects: global
+              cookies:
+                send: true
+                store: true
+              rebuildPath: true
+
+cookieJar:
+  name: MedPro Jar
+  meta:
+    id: jar_medpro
+    created: 1763666767562
+    modified: 1763666767562
+environments:
+  name: MedPro Environment
+  meta:
+    id: env_medpro
+    created: 1763666767548
+    modified: 1763666767548
+    isPrivate: false
+  data:
+    base_url: "http://localhost:8080"
