@@ -1,0 +1,34 @@
+-----------Paciente-------------
+{
+  "nome": "Mariana Rocha",
+  "email": "mariana.rocha@gmail.com",
+  "telefone": "(21) 99876-4321",
+  "cpf": "98765432100",
+  "endereco": {
+    "logradouro": "Avenida Lírios do Campo",
+    "bairro": "Vila Horizonte",
+    "cep": "22745-900",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ",
+    "numero": "850",
+    "complemento": "Bloco 3, Apto 1202"
+  }
+}
+
+-----------Medico-------------
+{
+  "nome": "Dr. Rafael Monteiro",
+  "email": "rafael.monteiro@clinicavita.com",
+  "telefone": "21988776655",
+  "crm": "987321",
+  "especialidade": "CARDIOLOGIA",
+  "endereco": {
+    "logradouro": "Rua Arnaldo Borges",
+    "bairro": "Centro",
+    "cep": "22031-050",
+    "cidade": "Rio de Janeiro",
+    "uf": "RJ",
+    "numero": "210",
+    "complemento": "Sala 402"
+  }
+}
